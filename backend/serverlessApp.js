@@ -1,0 +1,18 @@
+const express = require("express");
+const cors = require("cors");
+const authRoutes = require("./src/routes/auth");
+const medicineRoutes = require("./src/routes/medicines");
+const requestRoutes = require("./src/routes/requests");
+const dashboardRoutes = require("./src/routes/dashboard");
+const alertRoutes = require("./src/routes/alerts");
+const app = express();
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN || "*" }));
+app.use(express.json({ limit: "1mb" }));
+app.get("/api/health", (req, res) => res.json({ status: "ok", app: "MediWaste API" }));
+app.use("/api/auth", authRoutes);
+app.use("/api/medicines", medicineRoutes);
+app.use("/api/requests", requestRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/alerts", alertRoutes.router);
+app.use((err, req, res, next) => { console.error(err); res.status(500).json({ message: "Unexpected server error." }); });
+module.exports = app;
